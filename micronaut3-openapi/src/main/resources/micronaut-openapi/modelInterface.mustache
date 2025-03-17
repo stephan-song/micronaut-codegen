@@ -1,0 +1,51 @@
+{{^vendorExtensions.x-is-one-of-interface}}{{#discriminator}}@com.fasterxml.jackson.annotation.JsonTypeInfo(use = com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME, include = com.fasterxml.jackson.annotation.JsonTypeInfo.As.EXISTING_PROPERTY, property = {{#generateConstants}}{{classname}}.JSON_DISCRIMINATOR{{/generateConstants}}{{^generateConstants}}"{{propertyBaseName}}"{{/generateConstants}})
+@com.fasterxml.jackson.annotation.JsonSubTypes({
+	{{#discriminator.mappedModels}}
+	@com.fasterxml.jackson.annotation.JsonSubTypes.Type(value = {{modelName}}.class, name = "{{^vendorExtensions.x-discriminator-value}}{{mappingName}}{{/vendorExtensions.x-discriminator-value}}{{#vendorExtensions.x-discriminator-value}}{{{vendorExtensions.x-discriminator-value}}}{{/vendorExtensions.x-discriminator-value}}"){{^-last}},{{/-last}}
+	{{/discriminator.mappedModels}}
+})
+{{/discriminator}}{{^discriminator}}@com.fasterxml.jackson.databind.annotation.JsonDeserialize(as = {{name}}Default{{modelNameSuffix}}.class)
+{{/discriminator}}
+public{{#sealed}} sealed{{/sealed}} interface {{classname}}{{#interfaces}}{{#-first}} extends {{{.}}}{{/-first}}{{^-first}}, {{{.}}}{{/-first}}{{/interfaces}}{{#sealed}} permits {{#children}}{{classname}}{{^-last}}, {{/-last}}{{/children}}{{/sealed}} {
+{{#generateConstants}}{{#discriminator}}
+	java.lang.String JSON_DISCRIMINATOR = "{{propertyBaseName}}";{{/discriminator}}{{#vars}}
+	java.lang.String JSON_PROPERTY_{{nameInSnakeCase}} = "{{baseName}}";{{/vars}}{{/generateConstants}}{{#discriminator}}{{#generateConstants}}
+{{/generateConstants}}
+
+	@com.fasterxml.jackson.annotation.JsonProperty({{#generateConstants}}JSON_DISCRIMINATOR{{/generateConstants}}{{^generateConstants}}"{{propertyBaseName}}"{{/generateConstants}})
+	{{discriminator.propertyType}} {{^record}}{{discriminator.propertyGetter}}{{/record}}{{#record}}{{propertyName}}{{/record}}();{{/discriminator}}{{#vendorExtensions.additionalPropertiesMap}}
+	@com.fasterxml.jackson.annotation.JsonAnyGetter
+	java.util.Map<{{{vendorExtensions.additionalPropertiesMap.keyType}}}, {{{vendorExtensions.additionalPropertiesMap.valueType}}}> getAdditionalProperties();
+
+	@com.fasterxml.jackson.annotation.JsonAnySetter
+	void setAdditionalProperties({{{vendorExtensions.additionalPropertiesMap.keyType}}} propertyKey,{{{vendorExtensions.additionalPropertiesMap.valueType}}} value);
+{{/vendorExtensions.additionalPropertiesMap}}{{#hasVars}}{{#vars}}
+
+{{#description}}	/** {{description}} */
+{{/description}}{{>modelPropertyJackson}}
+{{^record}}	{{>modelPropertyType}} {{getter}}();
+
+	@com.fasterxml.jackson.annotation.JsonProperty({{#generateConstants}}JSON_PROPERTY_{{nameInSnakeCase}}{{/generateConstants}}{{^generateConstants}}"{{baseName}}"{{/generateConstants}})
+	void {{setter}}({{>modelPropertyType}} new{{nameInPascalCase}});{{/record}}{{#record}}	{{>modelPropertyType}} {{name}}();{{/record}}{{/vars}}{{#vars}}{{#isEnum}}
+
+{{>modelEnum}}{{/isEnum}}{{/vars}}{{/hasVars}}
+}{{/vendorExtensions.x-is-one-of-interface}}{{#vendorExtensions.x-is-one-of-interface}}{{^discriminator}}@com.fasterxml.jackson.annotation.JsonTypeInfo(use = com.fasterxml.jackson.annotation.JsonTypeInfo.Id.DEDUCTION, visible = true)
+@com.fasterxml.jackson.annotation.JsonSubTypes({
+	{{#oneOf}}
+	@com.fasterxml.jackson.annotation.JsonSubTypes.Type(value = {{{.}}}.class){{^-last}},{{/-last}}
+	{{/oneOf}}
+})
+{{/discriminator}}{{#discriminator}}@com.fasterxml.jackson.annotation.JsonTypeInfo(use = com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME, include = com.fasterxml.jackson.annotation.JsonTypeInfo.As.EXISTING_PROPERTY, property = {{#generateConstants}}{{classname}}.JSON_DISCRIMINATOR{{/generateConstants}}{{^generateConstants}}"{{propertyBaseName}}"{{/generateConstants}})
+@com.fasterxml.jackson.annotation.JsonSubTypes({
+	{{#discriminator.mappedModels}}
+	@com.fasterxml.jackson.annotation.JsonSubTypes.Type(value = {{modelName}}.class, name = "{{^vendorExtensions.x-discriminator-value}}{{mappingName}}{{/vendorExtensions.x-discriminator-value}}{{#vendorExtensions.x-discriminator-value}}{{{vendorExtensions.x-discriminator-value}}}{{/vendorExtensions.x-discriminator-value}}"),
+	{{/discriminator.mappedModels}}
+})
+{{/discriminator}}
+public{{#sealed}} sealed{{/sealed}} interface {{classname}}{{#vendorExtensions.x-implements}}{{#-first}} extends {{{.}}}{{/-first}}{{^-first}}, {{{.}}}{{/-first}}{{/vendorExtensions.x-implements}}{{#sealed}} permits {{#children}}{{name}}{{^-last}}, {{/-last}}{{/children}}{{/sealed}}{{^discriminator}} {}{{/discriminator}}{{#discriminator}} {
+{{#generateConstants}}{{#discriminator}}
+	java.lang.String JSON_DISCRIMINATOR = "{{propertyBaseName}}";
+{{/discriminator}}{{/generateConstants}}
+	@com.fasterxml.jackson.annotation.JsonProperty({{#generateConstants}}JSON_DISCRIMINATOR{{/generateConstants}}{{^generateConstants}}"{{propertyBaseName}}"{{/generateConstants}})
+	{{discriminator.propertyType}} {{^record}}{{discriminator.propertyGetter}}{{/record}}{{#record}}{{propertyName}}{{/record}}();
+}{{/discriminator}}{{/vendorExtensions.x-is-one-of-interface}}

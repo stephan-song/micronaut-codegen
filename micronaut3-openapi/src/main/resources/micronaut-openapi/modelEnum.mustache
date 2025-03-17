@@ -1,0 +1,30 @@
+public enum {{#nameInPascalCase}}{{{nameInPascalCase}}}{{/nameInPascalCase}}{{^nameInPascalCase}}{{{classname}}}{{/nameInPascalCase}} {
+
+{{#allowableValues}}{{#enumVars}}	{{{name}}}({{{value}}}){{^-last}},
+{{/-last}}{{#-last}};{{/-last}}{{/enumVars}}{{/allowableValues}}
+{{#allowableValues}}{{#enumVars}}
+	public static final {{dataType}} {{{name}}}_VALUE = {{{value}}};{{/enumVars}}{{/allowableValues}}
+
+	private final {{dataType}} value;
+
+	private {{#nameInPascalCase}}{{{nameInPascalCase}}}{{/nameInPascalCase}}{{^nameInPascalCase}}{{{classname}}}{{/nameInPascalCase}}({{dataType}} value) {
+		this.value = value;
+	}
+
+	@com.fasterxml.jackson.annotation.JsonCreator
+	public static {{#nameInPascalCase}}{{{nameInPascalCase}}}{{/nameInPascalCase}}{{^nameInPascalCase}}{{{classname}}}{{/nameInPascalCase}} toEnum({{dataType}} value) {
+		return toOptional(value).orElseThrow(() -> new IllegalArgumentException("Unknown value '" + value + "'."));
+	}
+
+	public static java.util.Optional<{{#nameInPascalCase}}{{{nameInPascalCase}}}{{/nameInPascalCase}}{{^nameInCamelCase}}{{{classname}}}{{/nameInCamelCase}}> toOptional({{dataType}} value) {
+		return java.util.Arrays
+				.stream(values())
+				.filter(e -> e.value.equals(value))
+				.findAny();
+	}
+
+	@com.fasterxml.jackson.annotation.JsonValue
+	public {{dataType}} getValue() {
+		return value;
+	}
+}

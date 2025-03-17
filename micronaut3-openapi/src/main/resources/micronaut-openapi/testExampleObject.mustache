@@ -1,0 +1,43 @@
+package {{package}};
+{{#models}}
+
+public class {{classname}}TestExample {
+{{#model}}
+
+	public static {{classname}} build() {
+		{{#isEnum}}
+		return {{classname}}.values()[0];
+		{{/isEnum}}
+		{{^isEnum}}
+		{{#hasChildren}}
+		{{#children}}
+		{{#-first}}
+		return {{{classname}}}TestExample.build();
+		{{/-first}}
+		{{/children}}
+		{{/hasChildren}}
+		{{^hasChildren}}
+		{{classname}} exampleInstance = new {{classname}}();
+		{{#allVars}}
+		{{#isEnum}}
+		exampleInstance.set{{nameInPascalCase}}({{classname}}.{{datatypeWithEnum}}.toEnum({{{example}}}));
+		{{/isEnum}}
+		{{#isModel}}
+		{{^isPrimitiveType}}
+		exampleInstance.set{{nameInPascalCase}}({{{example}}});
+		{{/isPrimitiveType}}
+		exampleInstance.set{{nameInPascalCase}}({{baseType}}TestExample.build());
+		{{/isModel}}
+		{{^isEnum}}
+		{{^isModel}}
+		exampleInstance.set{{nameInPascalCase}}({{>testExampleObjectPropertyExample}});
+		{{/isModel}}
+		{{/isEnum}}
+		{{/allVars}}
+		return exampleInstance;
+		{{/hasChildren}}
+		{{/isEnum}}
+	}
+	{{/model}}
+}
+{{/models}}

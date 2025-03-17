@@ -1,0 +1,19 @@
+{{#serdeable}}@io.micronaut.serde.annotation.Serdeable
+{{/serdeable}}public record {{classname}}({{#allVars}}
+
+{{#description}}	/** {{description}} */
+{{/description}}{{^required}}	@io.micronaut.core.annotation.Nullable
+{{/required}}{{#useBeanValidation}}{{>modelPropertyValidation}}{{/useBeanValidation}}{{>modelPropertyJackson}}
+	{{>modelPropertyType}} {{name}}{{^-last}},{{/-last}}{{/allVars}}){{#interfaceModels}}{{#-first}} implements{{/-first}} {{classname}}{{^-last}}, {{/-last}}{{/interfaceModels}} {{curly}}{{#generateConstants}}
+{{#vars}}{{#-first}}
+{{/-first}}	public static final java.lang.String JSON_PROPERTY_{{nameInSnakeCase}} = "{{baseName}}";
+{{/vars}}{{/generateConstants}}{{#vendorExtensions.discriminatorPropertyValue}}{{^generateConstants}}
+{{/generateConstants}}
+
+	@Override
+	public {{vendorExtensions.discriminatorPropertyType}} {{vendorExtensions.discriminatorPropertyName}}() {
+		return {{{vendorExtensions.discriminatorPropertyValue}}};
+	}
+{{/vendorExtensions.discriminatorPropertyValue}}{{#allVars}}{{#isEnum}}
+{{>modelEnum}}{{#-last}}
+{{/-last}}{{/isEnum}}{{/allVars}}}

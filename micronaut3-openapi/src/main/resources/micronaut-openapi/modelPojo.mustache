@@ -1,0 +1,132 @@
+{{#serdeable}}@io.micronaut.serde.annotation.Serdeable
+{{/serdeable}}
+public{{#sealed}}{{#interfaceModels}} final{{/interfaceModels}}{{/sealed}} class {{classname}}{{#interfaceModels}}{{#-first}} implements{{/-first}} {{classname}}{{^-last}}, {{/-last}}{{/interfaceModels}} {
+{{#generateConstants}}{{#vars}}{{#-first}}
+{{/-first}}	public static final java.lang.String JSON_PROPERTY_{{nameInSnakeCase}} = "{{baseName}}";
+{{/vars}}
+{{/generateConstants}}
+
+{{#allVars}}{{#description}}	/** {{description}} */
+{{/description}}{{#useBeanValidation}}{{>modelPropertyValidation}}{{/useBeanValidation}}{{>modelPropertyJackson}}
+	private {{>modelPropertyType}} {{name}}{{>modelPropertyDefault}};
+
+{{/allVars}}
+{{#vendorExtensions.additionalPropertiesMap}}	private java.util.Map<{{{vendorExtensions.additionalPropertiesMap.keyType}}}, {{{vendorExtensions.additionalPropertiesMap.valueType}}}> additionalProperties;
+
+{{/vendorExtensions.additionalPropertiesMap}}{{#vendorExtensions.discriminatorPropertyValue}}	@Override
+	public {{vendorExtensions.discriminatorPropertyType}} {{vendorExtensions.discriminatorPropertyGetter}}() {
+		return {{{vendorExtensions.discriminatorPropertyValue}}};
+	}
+
+{{/vendorExtensions.discriminatorPropertyValue}}	// methods
+
+	@Override
+	public boolean equals(Object object) {
+		if (object == this) {
+			return true;
+		}
+		if (object == null || getClass() != object.getClass()) {
+			return false;
+		}
+{{^allVars}}{{^discriminator}}{{#vendorExtensions.additionalPropertiesMap}}		{{classname}} other = ({{classname}}) object;
+{{/vendorExtensions.additionalPropertiesMap}}{{/discriminator}}{{#discriminator}}{{^vendorExtensions.additionalPropertiesMap}}		{{classname}} other = ({{classname}}) object;
+{{/vendorExtensions.additionalPropertiesMap}}{{/discriminator}}{{/allVars}}{{#allVars}}{{#-last}}		{{classname}} other = ({{classname}}) object;
+{{/-last}}{{/allVars}}		return {{#vendorExtensions.additionalPropertiesMap}}java.util.Objects.equals(this.additionalProperties, other.additionalProperties)
+				&& {{/vendorExtensions.additionalPropertiesMap}}{{^allVars}}{{#discriminator}}java.util.Objects.equals({{discriminator.propertyGetter}}(), other.{{discriminator.propertyGetter}}());{{/discriminator}}{{^discriminator}}super.equals(object);{{/discriminator}}{{/allVars}}{{#allVars}}{{^isFile}}{{^isByteArray}}java.util.Objects{{/isByteArray}}{{/isFile}}{{#isByteArray}}java.util.Arrays{{/isByteArray}}{{#isFile}}java.util.Arrays{{/isFile}}.equals({{name}}, other.{{name}}){{^-last}}
+				&& {{/-last}}{{#-last}}{{#discriminator}}
+				&& java.util.Objects.equals({{discriminator.propertyGetter}}(), other.{{discriminator.propertyGetter}}()){{/discriminator}};{{/-last}}{{/allVars}}
+	}
+
+	@Override
+	public int hashCode() {
+		return java.util.Objects.hash({{#vendorExtensions.additionalPropertiesMap}}this.additionalProperties{{#hasVars}}, {{/hasVars}}{{/vendorExtensions.additionalPropertiesMap}}{{^allVars}}{{#discriminator}}{{discriminator.propertyGetter}}(){{/discriminator}}{{/allVars}}{{#allVars}}{{^isFile}}{{^isByteArray}}{{name}}{{/isByteArray}}{{/isFile}}{{#isByteArray}}java.util.Arrays.hashCode({{name}}){{/isByteArray}}{{#isFile}}java.util.Arrays.hashCode({{name}}){{/isFile}}{{^-last}}, {{/-last}}{{#-last}}{{#discriminator}}, {{discriminator.propertyGetter}}(){{/discriminator}}{{/-last}}{{/allVars}});
+	}
+
+	@Override
+	public java.lang.String toString() {
+		return new java.lang.StringBuilder()
+				.append("{{classname}}[")
+		{{#vendorExtensions.additionalPropertiesMap}}		.append("additionalProperties=").append(this.additionalProperties)
+		{{/vendorExtensions.additionalPropertiesMap}}{{#allVars}}		.append("{{name}}{{^isByteArray}}=").append({{name}}{{/isByteArray}}{{#isByteArray}}.length=").append({{name}} == null ? null : {{name}}.length{{/isByteArray}}){{^-last}}.append(","){{/-last}}
+		{{/allVars}}		.append("]")
+				.toString();
+	}{{#allVars}}{{#-first}}
+
+	// fluent
+{{/-first}}
+
+	public {{classname}} {{name}}({{>modelPropertyType}} new{{nameInPascalCase}}) {
+		this.{{name}} = new{{nameInPascalCase}};
+		return this;
+	}{{#isContainer}}
+	
+	public {{classname}} {{#isArray}}add{{/isArray}}{{#isMap}}put{{/isMap}}{{nameInPascalCase}}Item({{#isMap}}java.lang.String key, {{/isMap}}{{{items.datatypeWithEnum}}} {{name}}Item) {
+		{{#isNullable}}
+			{{#vendorExtensions.x-jackson-nullable}}
+		if (this.{{name}} == null || !this.{{name}}.isPresent()) {
+			this.{{name}} = org.openapitools.jackson.nullable.JsonNullable.<{{{datatypeWithEnum}}}>of(new {{#isArray}}{{#uniqueItems}}{{instantiationType.set}}{{/uniqueItems}}{{^uniqueItems}}{{instantiationType.array}}{{/uniqueItems}}{{/isArray}}{{^isArray}}{{instantiationType.map}}{{/isArray}}<>());
+		}
+		this.{{name}}.get().{{#isArray}}add({{/isArray}}{{#isMap}}put(key, {{/isMap}}{{name}}Item);
+			{{/vendorExtensions.x-jackson-nullable}}
+			{{^vendorExtensions.x-jackson-nullable}}
+		if (this.{{name}} == null) {
+			this.{{name}} = new {{#isArray}}{{#uniqueItems}}{{instantiationType.set}}{{/uniqueItems}}{{^uniqueItems}}{{instantiationType.array}}{{/uniqueItems}}{{/isArray}}{{^isArray}}{{instantiationType.map}}{{/isArray}}<>();
+		}
+		this.{{name}}.{{#isArray}}add({{/isArray}}{{#isMap}}put(key, {{/isMap}}{{name}}Item);
+			{{/vendorExtensions.x-jackson-nullable}}
+		{{/isNullable}}
+		{{^isNullable}}
+		if (this.{{name}} == null) {
+			this.{{name}} = new {{#isArray}}{{#uniqueItems}}{{instantiationType.set}}{{/uniqueItems}}{{^uniqueItems}}{{instantiationType.array}}{{/uniqueItems}}{{/isArray}}{{^isArray}}{{instantiationType.map}}{{/isArray}}<>();
+		}
+		this.{{name}}.{{#isArray}}add({{/isArray}}{{#isMap}}put(key, {{/isMap}}{{name}}Item);
+		{{/isNullable}}
+		return this;
+	}
+
+	public {{classname}} remove{{nameInPascalCase}}Item({{#isMap}}java.lang.String key{{/isMap}}{{^isMap}}{{{items.datatypeWithEnum}}} {{name}}Item{{/isMap}}) {
+		{{#isNullable}}
+			{{#vendorExtensions.x-jackson-nullable}}
+		if (this.{{name}} != null && this.{{name}}.isPresent()) {
+			this.{{name}}.get().remove({{#isMap}}key{{/isMap}}{{^isMap}}{{name}}Item{{/isMap}});
+		}
+			{{/vendorExtensions.x-jackson-nullable}}
+			{{^vendorExtensions.x-jackson-nullable}}
+		if (this.{{name}} != null) {
+			this.{{name}}.remove({{#isMap}}key{{/isMap}}{{^isMap}}{{name}}Item{{/isMap}});
+		}
+			{{/vendorExtensions.x-jackson-nullable}}
+		{{/isNullable}}
+		{{^isNullable}}
+		if (this.{{name}} != null) {
+			this.{{name}}.remove({{#isMap}}key{{/isMap}}{{^isMap}}{{name}}Item{{/isMap}});
+		}
+		{{/isNullable}}
+		return this;
+	}{{/isContainer}}
+{{/allVars}}{{#vendorExtensions.additionalPropertiesMap}}
+	@com.fasterxml.jackson.annotation.JsonAnyGetter
+	public java.util.Map<{{{vendorExtensions.additionalPropertiesMap.keyType}}}, {{{vendorExtensions.additionalPropertiesMap.valueType}}}> getAdditionalProperties() {
+		return additionalProperties;
+	}
+
+	@com.fasterxml.jackson.annotation.JsonAnySetter
+	public void setAdditionalProperties({{{vendorExtensions.additionalPropertiesMap.keyType}}} propertyKey, {{{vendorExtensions.additionalPropertiesMap.valueType}}} value) {
+		if (this.additionalProperties == null) {
+					this.additionalProperties = new java.util.HashMap<>();
+				}
+		this.additionalProperties.put(propertyKey, value);
+	}
+{{/vendorExtensions.additionalPropertiesMap}}{{#allVars}}{{#-first}}
+	// getter/setter{{/-first}}
+
+	public {{>modelPropertyType}} {{getter}}() {
+		return {{name}};
+	}
+
+	public void {{setter}}({{>modelPropertyType}} new{{nameInPascalCase}}) {
+		this.{{name}} = new{{nameInPascalCase}};
+	}{{/allVars}}{{#allVars}}{{#isEnum}}
+
+{{>modelEnum}}{{/isEnum}}{{/allVars}}
+}

@@ -1,0 +1,8 @@
+package {{package}};
+
+{{#description}}/**
+ * {{description}}
+ **/
+{{/description}}{{>generated}}{{#models}}{{#model}}{{#isEnum}}{{>modelEnum}}{{/isEnum}}{{^isEnum}}{{#hasChildren}}{{>modelInterface}}{{/hasChildren}}{{^hasChildren}}{{#record}}{{>modelRecord}}{{/record}}{{^record}}{{>modelPojo}}{{/record}}{{/hasChildren}}{{/isEnum}}
+{{/model}}
+{{/models}}
