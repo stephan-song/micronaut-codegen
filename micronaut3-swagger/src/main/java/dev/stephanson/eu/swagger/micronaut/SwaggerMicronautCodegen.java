@@ -10,11 +10,13 @@ import io.swagger.codegen.CodegenType;
 import io.swagger.codegen.languages.AbstractJavaCodegen;
 import io.swagger.codegen.languages.features.BeanValidationFeatures;
 import io.swagger.models.Operation;
+import io.swagger.models.Path;
 import io.swagger.models.Swagger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -119,24 +121,27 @@ public class SwaggerMicronautCodegen extends AbstractJavaCodegen implements Bean
 
         if (swagger.getPaths() == null || swagger.getPaths().isEmpty()) return;
 
-        swagger.getPaths().keySet().stream()
-            .map(swagger::getPath)
-            .flatMap(it -> it.getOperations().stream())
-            .filter(Objects::nonNull)
-            .filter(it -> Objects.nonNull(it.getTags()))
-            .forEach(operation -> {
-                final var tags = operation.getTags().stream()
-                    .map(it -> Map.of("tag", it, "hasMore", "true"))
-                    .toList();
+        for (var pathName: swagger.getPaths().keySet()) {
+            var path = swagger.getPath(pathName);
+            if (Objects.isNull(path)) continue;
+            for (var operation: path.getOperations()) {
+                var tags = new ArrayList<Map<String, String>>();
+                for (var tag: operation.getTags()) {
+                    var storedTag = new HashMap<String, String>();
+                    storedTag.put("tag", tag);
+                    storedTag.put("hasMore", "true");
+                    tags.add(storedTag);
+                }
                 if (!tags.isEmpty()) {
                     tags.getLast().remove("hasMore");
                 }
+
                 if (!operation.getTags().isEmpty()) {
                     operation.setTags(List.of(operation.getTags().getFirst()));
                 }
                 operation.setVendorExtension("x-tags", tags);
-            });
-
+            }
+        }
     }
 
     @Override
