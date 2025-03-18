@@ -13,6 +13,10 @@ dependencyResolutionManagement {
 }
 
 
-include("micronaut3-swagger","micronaut3-openapi", "micronaut4-swagger")
+include(
+    "micronaut3-swagger",
+//    "micronaut3-openapi",
+//    "micronaut4-swagger"
+)
 
 rootProject.name = "micronaut-codegen"

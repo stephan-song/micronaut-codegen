@@ -7,9 +7,12 @@ import java.util.Objects;
 import java.io.Serializable;
 {{/serializableModel}}
 {{#useBeanValidation}}
-import io.micronaut.validation.Validated;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.*;
+/*import io.micronaut.validation.Validated; 2018-07-16: This causes issues with classes extending generic types (eg ArrayList<Something>):
+java.lang.ClassCastException: com.sun.tools.javac.code.Type$TypeVar cannot be cast to javax.lang.model.type.DeclaredType */
+import javax.validation.Valid;
+import javax.validation.constraints.*;
+import io.micronaut.core.annotation.Introspected;
+
 {{/useBeanValidation}}
 {{#jackson}}
 {{#withXml}}
@@ -18,7 +21,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 {{/withXml}}
 {{/jackson}}
 {{#withXml}}
-import jakarta.xml.bind.annotation.*;
+import javax.xml.bind.annotation.*;
 {{/withXml}}
 
 {{#models}}

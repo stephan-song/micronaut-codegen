@@ -9,9 +9,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/micronaut3-openapi" />
             <option value="$PROJECT_DIR$/micronaut3-swagger" />
-            <option value="$PROJECT_DIR$/micronaut4-swagger" />
           </set>
         </option>
       </GradleProjectSettings>
